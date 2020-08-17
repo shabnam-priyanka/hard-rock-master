@@ -1,5 +1,5 @@
 const searchButton = document.getElementById('searchButton');
-// this function will apply the value of search-input and find the songs after clicking the button, :) 
+
 searchButton.addEventListener('click',function(){
     const searchInput = document.getElementById('searchInput').value;
 
@@ -7,12 +7,12 @@ searchButton.addEventListener('click',function(){
     .then(response => response.json())
     .then(data => getSearchResult(data));
 })
-// this function will get the results which are coming from the api and it will create the results dynamically
+
 function getSearchResult(search){
     let parent = document.getElementById('parent');
     parent.innerHTML = '';
     for(let i = 0; i<10 ;i++){
-        // adding extra thing such as picture, album title
+        
         let title = search.data[i].title;
         let albumTitle = search.data[i].album.title;
         let artist = search.data[i].artist.name;
@@ -35,13 +35,13 @@ function getSearchResult(search){
         
     }
 }
-// getting the name of the artist and song title so the api can find the lyrics
+//  api can find the lyrics and artist 
 function getArtistTitle(artist,title){
     fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
     .then(response => response.json())
     .then(song => showLyrics(song,title));
 }
-// this function's work is to check if the lyrics are available or not
+//  lyrics are available or not
 function showLyrics(song,title){
     if(song.lyrics == undefined){
         document.getElementById('displayLyrics').innerText = "there have no lyrics";
