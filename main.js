@@ -51,30 +51,19 @@ button.addEventListener('click', function(){
         
         
     })
-
-    
-
-//     //shows the list
-// function show(){
-//     var dropdown = document.getElementById('dropdown');
-//     dropdown.style.display = 'none';
-
-// optionsVal.options.length = 0;
-
-// if(input.value){
-//     dropdown.style.display = 'block';
-//     var button1 = input.value;
-
-//     for(var i = 0; i < arr.length; i++){
-//         if(arr[i].indexOf(textCountry) !== -1){
-//             //addvalue
-//             addValue(arr[i],arr[i]);
-//             optionsVal.size = optionsVal.options.length;
-//         }
-//     }
-
-//     }
-// }
-
-
 })
+
+
+
+    let getLyrics = document.getElementById('Get-Lyrics0');
+
+
+    getLyrics.addEventListener('click', function(){
+        fetch(`https://api.lyrics.ovh/suggest/ + ${getLyrics.innerText}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); 
+
+            getLyrics.innerText = data;
+        })
+    })
