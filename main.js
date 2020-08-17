@@ -1,69 +1,52 @@
-let button = document.getElementById('searchBtn');
-let inputBox = document.querySelector('input');
+const searchButton = document.getElementById('searchButton');
+// this function will apply the value of search-input and find the songs after clicking the button, :) 
+searchButton.addEventListener('click',function(){
+    const searchInput = document.getElementById('searchInput').value;
 
-let lyrics0 = document.getElementById('Get-Lyrics0')
-let lyrics1 = document.getElementById('Get-Lyrics1')
-let lyrics2 = document.getElementById('Get-Lyrics2')
-let lyrics3 = document.getElementById('Get-Lyrics3')
-let lyrics4 = document.getElementById('Get-Lyrics4')
-let lyrics5 = document.getElementById('Get-Lyrics5')
-let lyrics6 = document.getElementById('Get-Lyrics6')
-let lyrics7 = document.getElementById('Get-Lyrics7')
-let lyrics8 = document.getElementById('Get-Lyrics8')
-let lyrics9 = document.getElementById('Get-Lyrics9')
-
-button.addEventListener('click', function(){
-    fetch('https://api.lyrics.ovh/suggest/'+ inputBox.value)
+    fetch(`https://api.lyrics.ovh/suggest/${searchInput}/`)
     .then(response => response.json())
-    .then(data => {
-        console.log(data); 
-
-        let song0 = data['data'][0]['title'];
-        lyrics0.innerHTML = song0;
-
-        let song1 = data['data'][1]['title'];
-        lyrics1.innerHTML = song1;
-
-        let song2 = data['data'][2]['title'];
-        lyrics2.innerHTML = song2;
-
-        let song3 = data['data'][3]['title'];
-        lyrics3.innerHTML = song3;
-
-        let song4 = data['data'][4]['title'];
-        lyrics4.innerHTML = song4;
-
-        let song5 = data['data'][5]['title'];
-        lyrics5.innerHTML = song5;
-
-        let song6 = data['data'][6]['title'];
-        lyrics6.innerHTML = song6;
-
-        let song7 = data['data'][7]['title'];
-        lyrics7.innerHTML = song7;
-
-        let song8 = data['data'][8]['title'];
-        lyrics8.innerHTML = song8;
-
-        let song9 = data['data'][9]['title'];
-        lyrics9.innerHTML = song9;
-
-        
-        
-    })
+    .then(data => getSearchResult(data));
 })
-
-
-
-    let getLyrics = document.getElementById('Get-Lyrics0');
-
-
-    getLyrics.addEventListener('click', function(){
-        fetch(`https://api.lyrics.ovh/suggest/ + ${getLyrics.innerText}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); 
-
-            getLyrics.innerText = data;
-        })
-    })
+// this function will get the results which are coming from the api and it will create the results dynamically
+function getSearchResult(search){
+    let parent = document.getElementById('parent');
+    parent.innerHTML = '';
+    for(let i = 0; i<10 ;i++){
+        // adding extra thing such as picture, album title
+        let title = search.data[i].title;
+        let albumTitle = search.data[i].album.title;
+        let artist = search.data[i].artist.name;
+        let image = search.data[i].artist.picture_small;
+        
+        let result = `<div class="single-result row align-items-center my-3 p-3">
+            <div class="col-md-8">
+                <h3 class="lyrics-name" id="title">${title}</h3>
+                <p class="author lead">Album by <span id="artistName">${artist}</span></p>
+                <p class="author lead">Album Title :  <span id="artistName">${albumTitle}</span></p>
+            </div>
+            <div class="col-md-1">
+                <img src="${image}" alt="">
+            </div>
+            <div class="col-md-3 text-md-right text-center">
+                <button  onclick="getArtistTitle('${artist}','${title}')" class="btn btn-success">Get Lyrics</button>
+            </div>
+        </div>`;
+        parent.innerHTML += result;
+        
+    }
+}
+// getting the name of the artist and song title so the api can find the lyrics
+function getArtistTitle(artist,title){
+    fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
+    .then(response => response.json())
+    .then(song => showLyrics(song,title));
+}
+// this function's work is to check if the lyrics are available or not
+function showLyrics(song,title){
+    if(song.lyrics == undefined){
+        document.getElementById('displayLyrics').innerText = "there have no lyrics";
+    }else{
+        document.getElementById('displayLyrics').innerText = song.lyrics;
+    }
+    document.getElementById('songTitle').innerText = title;
+}
